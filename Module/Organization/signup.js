@@ -1,14 +1,4 @@
-const connect = require("../../sqlConnection")
-const crypto = require("crypto")
-const mailer = require("../../Mailer")
-let connection
-connect()
-.then((output)=>{
-    connection = output
-})
-.catch((error)=>{
-    console.log(error);
-})
+const connection = require("../../sqlConnection");
 
 const organizationSignup = async(req, res)=>{
     console.log("organizationSignup",req.body);
@@ -20,10 +10,10 @@ const organizationSignup = async(req, res)=>{
     const Contact_Adress = req.body?.Contact_Adress
     const Profile_Img = req.body?.Profile_Img
     const otp_code = req.body?.otp_code
-    if (!Name || !Email_Address || !password || !Location || !CAC_Image || !Contact_Adress || !otp_code) {
+    if (!Name || !Email_Address || !password || !Location || !Contact_Adress || !otp_code) {
         console.log(Name, Email_Address, password, Location, CAC_Image, Contact_Adress);
         
-            return res.status(400).json({message: "Please provide all parameters including OTP code"})
+            return res.status(400).json({message: "Please provide all required parameters including OTP code"})
     }
     try {
         // Verify OTP
@@ -38,7 +28,7 @@ const organizationSignup = async(req, res)=>{
         }
 
         const command = 'INSERT INTO  Organization_Table (Name, CAC_Image, Email_Address, Contact_Address, Location, profileImg, password) VALUES (?,?,?,?,?,?,?)'
-        const values = [Name, CAC_Image, Email_Address,  Contact_Adress, Location, Profile_Img || null, password]
+        const values = [Name, CAC_Image || null, Email_Address,  Contact_Adress, Location, Profile_Img || null, password]
         const [result] = await connection.execute(command, values)
 
         // Delete OTP

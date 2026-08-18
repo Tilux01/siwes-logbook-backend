@@ -1,4 +1,4 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const AdminDelete = async (req, res) => {
     try {
@@ -8,7 +8,7 @@ const AdminDelete = async (req, res) => {
             return res.status(400).json({ message: "Type and ID are required" });
         }
         
-        const connection = await connect();
+        
         let query = "";
         
         if (type === "students") {

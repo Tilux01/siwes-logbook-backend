@@ -2,7 +2,7 @@ const express = require("express")
 const app = express();
 const cors = require("cors")
 const allBasic = require("./BasicFX.js")
-const connectSql = require("./sqlConnection.js")
+const connection = require("./sqlConnection.js")
 app.use(cors());
 app.use(express.json());
 const signup = require("./Module/Student/Signup.js")
@@ -54,16 +54,7 @@ const logbookSign = require("./Module/Logbook/Sign.js");
 const logbookGrade = require("./Module/Logbook/Grade.js");
 
 // require('dotenv').config();
-let connection
-connectSql()
-.then(async(output)=>{
-    connection = output
-    console.log("database is running");
-    
-})
-.catch((error)=>{
-    console.log(error);
-})
+
 const serverPort = process.env.PORT || 5687
 app.post("/school/signup", schoolSignup)
 app.post("/school/signin", schoolSignin)
@@ -77,6 +68,7 @@ app.post("/school/register/department/batch", SchoolDepartmentBatchAdd)
 app.post("/school/register/department/fetch", SchoolFetchDepartment)
 app.post("/organization/signup", organizationSignup)
 app.post("/organization/create/supervisor", organizationCreateSupervisor)
+app.post("/organization/create/supervisor/batch", require("./Module/Organization/CreateSupervisorBatch.js"))
 app.post("/user/student/signup", studentSignup)
 app.post("/user/student/signin", studentSignin)
 app.post("/user/student/profile", studentProfile)

@@ -1,4 +1,4 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const FetchAll = async (req, res) => {
     try {
@@ -8,7 +8,7 @@ const FetchAll = async (req, res) => {
             return res.status(400).json({ message: "Type is required (students, schools, organizations)" });
         }
         
-        const connection = await connect();
+        
         
         let query = "";
         

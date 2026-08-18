@@ -1,14 +1,4 @@
-const connect = require("../../sqlConnection")
-const crypto = require("crypto")
-const mailer = require("../../Mailer")
-let connection
-connect()
-.then((output)=>{
-    connection = output
-})
-.catch((error)=>{
-    console.log(error);
-})
+const connection = require("../../sqlConnection");
 
 const schoolSignup = async(req, res)=>{
     console.log("here",req.body);

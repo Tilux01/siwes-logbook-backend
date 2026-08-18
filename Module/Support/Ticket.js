@@ -1,4 +1,4 @@
-const connectSql = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const submitTicket = async (req, res) => {
     try {

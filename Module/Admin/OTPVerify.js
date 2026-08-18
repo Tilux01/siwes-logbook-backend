@@ -1,4 +1,4 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const AdminOTPVerify = async (req, res) => {
     try {
@@ -8,7 +8,7 @@ const AdminOTPVerify = async (req, res) => {
             return res.status(400).json({ message: "Email and OTP are required" });
         }
         
-        const connection = await connect();
+        
         
         const [rows] = await connection.execute(
             'SELECT * FROM OTP_Verification_Table WHERE email_address = ? AND otp_code = ? AND expires_at > NOW()',

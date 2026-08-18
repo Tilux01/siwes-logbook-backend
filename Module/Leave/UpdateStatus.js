@@ -1,12 +1,4 @@
-const connect = require("../../sqlConnection")
-let connection
-connect()
-    .then((output) => {
-        connection = output
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+const connection = require("../../sqlConnection");
 
 const updateLeaveStatus = async (req, res) => {
     const { leave_id, status, org_supervisor_id } = req.body;

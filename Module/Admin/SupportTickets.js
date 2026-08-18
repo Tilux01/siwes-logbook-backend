@@ -1,8 +1,8 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const FetchTickets = async (req, res) => {
     try {
-        const connection = await connect();
+        
         const query = "SELECT * FROM Support_Tickets_Table ORDER BY id DESC";
         const [results] = await connection.execute(query);
         
@@ -21,7 +21,7 @@ const ResolveTicket = async (req, res) => {
             return res.status(400).json({ message: "Ticket ID is required" });
         }
         
-        const connection = await connect();
+        
         const query = "UPDATE Support_Tickets_Table SET status = 'Resolved' WHERE id = ?";
         const [result] = await connection.execute(query, [id]);
         

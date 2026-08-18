@@ -1,4 +1,4 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const AdminUpdate = async (req, res) => {
     try {
@@ -8,7 +8,7 @@ const AdminUpdate = async (req, res) => {
             return res.status(400).json({ message: "Type, ID, and data are required" });
         }
         
-        const connection = await connect();
+        
         
         let table = "";
         let allowedFields = [];

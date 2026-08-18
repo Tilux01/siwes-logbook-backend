@@ -1,12 +1,4 @@
-const connect = require("../../sqlConnection")
-let connection
-connect()
-    .then((output) => {
-        connection = output
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+const connection = require("../../sqlConnection");
 
 const createLeave = async (req, res) => {
     const { student_id, start_date, end_date, reason } = req.body

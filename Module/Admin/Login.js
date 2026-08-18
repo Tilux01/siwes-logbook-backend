@@ -1,4 +1,4 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 const mailer = require("../../Mailer");
 
 const AdminLogin = async (req, res) => {
@@ -9,7 +9,7 @@ const AdminLogin = async (req, res) => {
             return res.status(400).json({ message: "Email and password are required" });
         }
         
-        const connection = await connect();
+        
         
         // 1. Verify against SuperAdmin_Table
         const [rows] = await connection.execute(

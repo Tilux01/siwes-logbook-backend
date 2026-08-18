@@ -1,12 +1,4 @@
-const connect = require("../../sqlConnection")
-let connection
-connect()
-.then((output)=>{
-    connection = output
-})
-.catch((error)=>{
-    console.log(error);
-})
+const connection = require("../../sqlConnection");
 
 const otpVerify = async(req, res)=>{
     console.log("otpVerify", req.body);

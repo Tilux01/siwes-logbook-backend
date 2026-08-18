@@ -1,8 +1,8 @@
-const connect = require("../../sqlConnection");
+const connection = require("../../sqlConnection");
 
 const DashboardStats = async (req, res) => {
     try {
-        const connection = await connect();
+        
         
         // Count Students
         const [studentCount] = await connection.execute('SELECT COUNT(*) as total FROM Student_Table');

@@ -1,12 +1,4 @@
-const connect = require("../../sqlConnection")
-let connection
-connect()
-    .then((output) => {
-        connection = output
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+const connection = require("../../sqlConnection");
 
 const fetchSupervisorLeaves = async (req, res) => {
     const org_supervisor_id = req.body?.org_supervisor_id;

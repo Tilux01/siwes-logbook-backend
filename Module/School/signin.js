@@ -1,13 +1,4 @@
-const connect = require("../../sqlConnection")
-let connection
-connect()
-.then((output)=>{
-    connection = output
-    console.log("connection live on signup");
-})
-.catch((error)=>{
-    console.log(error);
-})
+const connection = require("../../sqlConnection");
 const schoolSignin = async(req, res) =>{
     console.log("schoolSignin", req.body);
     const email_address = req.body?.email_address

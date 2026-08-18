@@ -1,13 +1,4 @@
-const connect = require("../../sqlConnection")
-const mailer = require("../../Mailer")
-let connection
-connect()
-.then((output)=>{
-    connection = output
-})
-.catch((error)=>{
-    console.log(error);
-})
+const connection = require("../../sqlConnection");
 
 const otpSend = async(req, res)=>{
     console.log("otpSend", req.body);
