@@ -5,9 +5,9 @@ emailjs.init({
     privateKey: 'buIjBrbcfRf3AqhwPUnAB',
 })
 
-const mailUser = async(email) =>{
+const mailUser = async(email, templateId = 'template_irryds5') =>{
     const randomValue = await allBasic.getRandom()
-    emailjs.send('service_rql13fa', 'template_irryds5', {
+    emailjs.send('service_rql13fa', templateId, {
         email: email,
         OTP: randomValue
     })

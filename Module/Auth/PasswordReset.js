@@ -45,7 +45,7 @@ const sendResetOTP = async (req, res) => {
         await connection.execute(deleteCommand, [email]);
         
         // Generate and send OTP via email
-        const otpCode = await mailUser(email);
+        const otpCode = await mailUser(email, 'template_irryds5');
         
         // Save new OTP
         const saveCommand = 'INSERT INTO OTP_Verification_Table (email_address, otp_code) VALUES (?,?)';
