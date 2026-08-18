@@ -9,6 +9,9 @@ const pool = mysql.createPool({
     user: "avnadmin",
     password: "AVNS_48LZAEyOhELKKBLTPKz",
     database: "defaultdb",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
     ssl: {
         ca: fs.readFileSync(path.join(__dirname, 'ca.pem')),
         rejectUnauthorized: true

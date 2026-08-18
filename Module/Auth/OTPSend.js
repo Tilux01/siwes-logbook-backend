@@ -1,4 +1,5 @@
 const connection = require("../../sqlConnection");
+const mailUser = require("../../Mailer.js");
 
 const otpSend = async(req, res)=>{
     console.log("otpSend", req.body);
@@ -9,7 +10,7 @@ const otpSend = async(req, res)=>{
     try {
         const deleteCommand = 'DELETE FROM `OTP_Verification_Table` WHERE email_address=?'
         await connection.execute(deleteCommand, [email_address])
-        const sendOTP = await mailer(email_address)
+        const sendOTP = await mailUser(email_address)
         const saveCommand = 'INSERT INTO OTP_Verification_Table (email_address, otp_code) VALUES (?,?)'
         const values = [email_address, sendOTP]
         await connection.execute(saveCommand, values)
