@@ -1,4 +1,5 @@
 const connection = require("../../sqlConnection");
+const mailUser = require("../../Mailer.js");
 
 const getTableAndColumnByRole = (role) => {
     switch (role) {
@@ -44,7 +45,7 @@ const sendResetOTP = async (req, res) => {
         await connection.execute(deleteCommand, [email]);
         
         // Generate and send OTP via email
-        const otpCode = await mailer(email);
+        const otpCode = await mailUser(email);
         
         // Save new OTP
         const saveCommand = 'INSERT INTO OTP_Verification_Table (email_address, otp_code) VALUES (?,?)';
