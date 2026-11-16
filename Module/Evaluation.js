@@ -12,6 +12,34 @@ const submitEvaluation = async (req, res) => {
     }
 
     try {
+        // Enforce that org_supervisor_id corresponds to a valid Organization / Industry Supervisor
+        const [supervisorRows] = await connection.execute(
+            "SELECT id, Full_Name FROM Organization_Supervisor WHERE id = ?",
+            [org_supervisor_id]
+        );
+        if (supervisorRows.length === 0) {
+            return res.status(403).json({ 
+                message: "Access denied. Only registered industry supervisors can grade final evaluations." 
+            });
+        }
+
+        // Verify student exists and check assignment
+        const [studentRows] = await connection.execute(
+            "SELECT id, Organization_Supervisor_Id FROM Student_Table WHERE id = ?",
+            [student_id]
+        );
+        if (studentRows.length === 0) {
+            return res.status(404).json({ message: "Student record not found." });
+        }
+
+        const student = studentRows[0];
+        // If student is explicitly assigned to a specific supervisor, verify it matches
+        if (student.Organization_Supervisor_Id && Number(student.Organization_Supervisor_Id) !== Number(org_supervisor_id)) {
+            return res.status(403).json({
+                message: "Access denied. You are not the assigned industry supervisor for this student."
+            });
+        }
+
         // Check if already evaluated
         const [existing] = await connection.execute("SELECT id FROM Student_Evaluation_Table WHERE student_id = ?", [student_id]);
         if (existing.length > 0) {
