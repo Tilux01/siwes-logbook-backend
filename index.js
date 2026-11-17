@@ -131,6 +131,7 @@ app.post("/admin/update", require("./Module/Admin/Update.js"))
 app.post("/support/ticket", require("./Module/Support/Ticket.js").submitTicket)
 app.get("/admin/tickets", require("./Module/Admin/SupportTickets.js").FetchTickets)
 app.post("/admin/tickets/resolve", require("./Module/Admin/SupportTickets.js").ResolveTicket)
+app.post("/admin/tickets/delete", require("./Module/Admin/SupportTickets.js").DeleteTicket)
 app.get("/ping", async (req, res) => {
   try {
     if (!connection) {

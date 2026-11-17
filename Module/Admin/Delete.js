@@ -17,6 +17,8 @@ const AdminDelete = async (req, res) => {
             query = "DELETE FROM Instituition_Table WHERE id = ?";
         } else if (type === "organizations") {
             query = "DELETE FROM Organization_Table WHERE id = ?";
+        } else if (type === "tickets") {
+            query = "DELETE FROM Support_Tickets_Table WHERE id = ?";
         } else {
             return res.status(400).json({ message: "Invalid type requested" });
         }
