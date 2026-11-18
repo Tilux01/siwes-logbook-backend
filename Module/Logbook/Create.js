@@ -25,7 +25,15 @@ const logbookCreate = async (req, res) => {
             return res.status(400).json({ message: "Your SIWES start and end dates are not configured yet. Please contact your coordinator." });
         }
         
-        const logTime = new Date(date).setHours(0, 0, 0, 0);
+        const dateStr = typeof date === 'string' ? date.split('T')[0] : new Date(date).toISOString().split('T')[0];
+        
+        // Prevent submissions on weekends (Saturday = 6, Sunday = 0)
+        const dayOfWeek = new Date(`${dateStr}T12:00:00`).getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+            return res.status(400).json({ message: "Cannot submit logbook entries for weekends (Saturday or Sunday). SIWES logs are for official workdays only." });
+        }
+
+        const logTime = new Date(`${dateStr}T00:00:00`).getTime();
         const startTime = new Date(Start_Date).setHours(0, 0, 0, 0);
         const endTime = new Date(End_Date).setHours(0, 0, 0, 0);
         const todayTime = new Date().setHours(0, 0, 0, 0);
@@ -42,14 +50,47 @@ const logbookCreate = async (req, res) => {
             return res.status(400).json({ message: "Cannot submit a logbook entry for a future date." });
         }
 
+        // Check if student is on approved leave on this date
+        const [leaveCheck] = await connection.execute(
+            "SELECT id FROM Leave_Requests_Table WHERE student_id = ? AND status = 'approved' AND ? BETWEEN DATE(start_date) AND DATE(end_date)",
+            [student_id, dateStr]
+        );
+        if (leaveCheck.length > 0) {
+            return res.status(400).json({ message: "You are on approved leave for this date. Logbook entries cannot be submitted on leave days." });
+        }
+
+        // Accurately compute calendar-aligned week number from Start_Date
+        let calculatedWeek = week_number;
+        if (Start_Date) {
+            const target = new Date(`${dateStr}T12:00:00`);
+            const startStr = typeof Start_Date === 'string' ? Start_Date.split('T')[0] : new Date(Start_Date).toISOString().split('T')[0];
+            const start = new Date(`${startStr}T12:00:00`);
+            
+            const startDay = start.getDay();
+            const startMondayDiff = startDay === 0 ? -6 : 1 - startDay;
+            const startMonday = new Date(start);
+            startMonday.setDate(start.getDate() + startMondayDiff);
+            startMonday.setHours(0, 0, 0, 0);
+
+            const targetDay = target.getDay();
+            const targetMondayDiff = targetDay === 0 ? -6 : 1 - targetDay;
+            const targetMonday = new Date(target);
+            targetMonday.setDate(target.getDate() + targetMondayDiff);
+            targetMonday.setHours(0, 0, 0, 0);
+
+            const diffTime = targetMonday.getTime() - startMonday.getTime();
+            const diffWeeks = Math.round(diffTime / (1000 * 60 * 60 * 24 * 7));
+            calculatedWeek = Math.max(1, diffWeeks + 1);
+        }
+
         // Prevent duplicate logs for the same date
-        const [dupQuery] = await connection.execute('SELECT id FROM Logbook_Table WHERE student_id=? AND DATE(date)=DATE(?)', [student_id, date]);
+        const [dupQuery] = await connection.execute('SELECT id FROM Logbook_Table WHERE student_id=? AND DATE(date)=DATE(?)', [student_id, dateStr]);
         if (dupQuery.length > 0) {
             return res.status(400).json({ message: "An entry has already been recorded for this date." });
         }
 
         const command = 'INSERT INTO Logbook_Table (student_id, date, week_number, activity_description, image_attachment) VALUES (?,?,?,?,?)'
-        const values = [student_id, date, week_number, activity_description, image_attachment || null]
+        const values = [student_id, dateStr, calculatedWeek, activity_description, image_attachment || null]
         const [result] = await connection.execute(command, values)
         res.status(200).json({ message: "Logbook entry created successfully", id: result?.insertId, status: "OK" })
     } catch (error) {
